@@ -1,4 +1,4 @@
-<p align="center">![AutoGrade Logo](logo/logo.png)</p>
+<p align="center"><img src=logo/logo.png></p>
 
 # Introduction
 
