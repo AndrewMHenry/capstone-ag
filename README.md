@@ -1,5 +1,11 @@
 ![AutoGrade Logo](logo/logo.png)
 
-#Introduction
+# Introduction
 
 Welcome to Team AutoGrade's Capstone project repository!
+Team AutoGrade (or Team AG) consists of Kayla Carrigan,
+Andrew Henry, Yvonne Kamdem, Barrett Marsh, and Caroline Nseir.
+
+# Navigation
+
+- [AutoGrade development setup guide](docs/development-setup.md).
