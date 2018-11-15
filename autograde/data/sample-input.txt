@@ -1,0 +1,2 @@
+answer: question=1; score=1.0; evaluation_confidence=0.97
+answer: question=2; score=0.0; evaluation_confidence=0.65
