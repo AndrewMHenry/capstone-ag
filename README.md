@@ -3,11 +3,11 @@ Repository for Capstone Team AG
 
 
 
-#Development Setup Instructions
+# Development Setup Instructions
 
-##Step 1: Obtain Python 3
+## Step 1: Obtain Python 3
 
-##Step 2: Set up a virtual environment
+## Step 2: Set up a virtual environment
 
 In my experience, installing Python projects is easiest using
 a virtual environment.  A virtual environment is a directory
@@ -39,10 +39,10 @@ To activate your virtual environment, change directory
 into `capstone-ag` and do one of the following, based
 on your operating system:
 
-###Windows:
+### Windows:
 Run `Scripts\activate.bat`.
 
-###Linux/MacOS:
+### Linux/MacOS:
 Run `source bin/activate`.
 
 Your terminal prompt should change to reflect the fact that
@@ -51,7 +51,7 @@ virtual environment has only been activated in the current
 terminal; to use your environment in a new terminal, you
 will have to activate it again there.
 
-##Step 3: Download repository and install AutoGrade
+## Step 3: Download repository and install AutoGrade
 To download this repository, clone it by running
 ```
 git clone https://github.com/AndrewMHenry/capstone-ag
