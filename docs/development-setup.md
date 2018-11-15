@@ -13,7 +13,9 @@ In my experience, installing Python projects is easiest using
 a virtual environment.  A virtual environment is a directory
 that contains a copy of the Python interpreter and allows you
 to install Python packages locally without affecting the rest
-of your system.
+of your system.  These instructions are based on the full
+tutorial found [here](https://docs.python.org/3/tutorial/venv.html).
+
 
 The first step is to creating a virtual environment is finding
 a place to put it.  I put my virtual environments in an
