@@ -1,11 +1,14 @@
 Repository for Capstone Team AG
 -------------------------------
 
-
-
 # Development Setup Instructions
 
 ## Step 1: Obtain Python 3
+
+If Python 3 is not already on your system, I would recommend
+searching the web for "Python 3" and your operating system.
+This should point you in the right direction for finding
+install instructions.
 
 ## Step 2: Set up a virtual environment
 
