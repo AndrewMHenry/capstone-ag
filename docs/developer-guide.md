@@ -1,4 +1,4 @@
-# Development Setup Instructions
+# Development Setup
 
 ## Step 1: Obtain Python 3
 

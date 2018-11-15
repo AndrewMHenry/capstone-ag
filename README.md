@@ -8,4 +8,4 @@ Andrew Henry, Yvonne Kamdem, Barrett Marsh, and Caroline Nseir.
 
 # Documentation Links
 
-- [AutoGrade development setup guide](docs/development-setup.md)
+- [AutoGrade Developer Guide](docs/developer-guide.md)
