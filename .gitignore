@@ -1,3 +1,4 @@
 docs/build/*
 autograde.egg-info/
 autograde/__pycache__/
+autograde/*.pyc
