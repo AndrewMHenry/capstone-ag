@@ -1,9 +1,9 @@
 """Implementation of data format for AG-Laptop transfers."""
 import collections
 
-ANSWER_ATTRIBUTES = 'question score evaluation_confidence'
+ANSWER_ATTRIBUTES = 'question score evaluation_confidence'.split()
 
-Answer = collections.namedtuple('Answer', ANSWER_ATTRIBUTES)
+Answer = collections.namedtuple('Answer', ' '.join(ANSWER_ATTRIBUTES))
 
 
 """Converting text to answers................................"""
@@ -47,10 +47,9 @@ def format_definition(attribute, value):
 def format_answer(answer):
     """Return line of text representing the Answer object."""
     definitions = [
-            format_definition(attribute, value)
-            for attribute, answer[attribute]
-            in ANSWER_ATTRIBUTES]
-    return 'answer {}: {}\n'.format(answer.question, definitions)
+            format_definition(attribute, getattr(answer, attribute))
+            for attribute in ANSWER_ATTRIBUTES]
+    return 'answer: {}\n'.format('; '.join(definitions))
 
 
 def write_answers(filename, answers):
