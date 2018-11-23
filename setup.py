@@ -5,4 +5,5 @@ setuptools.setup(
         author='Team AG',
         packages=['autograde'],
         install_requires=[
+            'pdoc',
             'sklearn'])
