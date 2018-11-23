@@ -1,4 +1,4 @@
-# Development Setup
+# Setup
 
 ## Step 1: Obtain Python 3
 
@@ -16,7 +16,6 @@ to install Python packages locally without affecting the rest
 of your system.  These instructions are based on the full
 tutorial found [here](https://docs.python.org/3/tutorial/venv.html).
 
-
 The first step is to creating a virtual environment is finding
 a place to put it.  I put my virtual environments in an
 `envs` directory under my home directory (`~`), but the
@@ -26,8 +25,8 @@ environments before, I would recommend making a new directory
 just for storing virtual environments.
 
 The next step is to create the virtual environment.  To do
-this, open a terminal and change directory to your virtual
-environments directory and run
+this, open a terminal, change directory to your virtual
+environments directory, and run
 ```
 python3 -m venv capstone-ag
 ```
@@ -63,7 +62,7 @@ With your virtual environment activated, run
 pip install -e .
 ```
 from the cloned `capstone-ag` directory.  The `.` means
-`pip` will install the AutoGrade package from the current
+`pip` will install the `autograde` package from the current
 directory (using `setup.py`), and the `-e` means that the
 installed code will change as you modify the code in the
 repository.
