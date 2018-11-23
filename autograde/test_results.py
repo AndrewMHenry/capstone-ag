@@ -1,6 +1,6 @@
 import unittest
 
-from autograde.format import read_answers
+from autograde.results import read_results, write_results
 
 class TestFormat(unittest.TestCase):
 
