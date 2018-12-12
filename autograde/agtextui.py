@@ -1,4 +1,5 @@
 from autograde.results import read_results
+import json
 
 def generate_report(filename):
     """
@@ -6,7 +7,15 @@ def generate_report(filename):
 
     Return a string with the report text.
     """
-    pass
+    with open(filename, 'r') as f:
+        string = f.read()
+
+    myobject = json.loads(string)
+
+    # turn myobject into our report text
+    report_text = myobject['Name'] + ' got a grade of ' + myobject['Grade']
+
+    return report_text
 
 
 def main():
@@ -14,8 +23,22 @@ def main():
     # read arguments
     import argparse
 
+    import sys
+
+    # make a parser
+    parser = argparse.ArgumentParser()
+
+    # add arguments to the parser
+    parser.add_argument('filename')
+
+    # parse the arguments
+    args = parser.parse_args()
+
+    # TODO: remove
+    print(args.filename)
+
     # extend to multiple files:
-    print(generate_report(filename))
+    print(generate_report(args.filename))
 
 if __name__ == '__main__':
     main()
