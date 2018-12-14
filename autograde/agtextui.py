@@ -1,6 +1,8 @@
 from autograde.results import read_results
 import json
 
+CONFIDENCE_THRESHOLD = 0.6
+
 def generate_report(filename):
     """
     TODO: What data exactly do we get from grading results?
@@ -23,7 +25,11 @@ def generate_report(filename):
                 + question
                 + ' is correct is '
                 + str(questiondict['correctConf'])
-                + '.\n')
+                + '.')
+
+        if questiondict['evalConf'] < CONFIDENCE_THRESHOLD:
+            report_text += ' [LOW EVALUATION CONFIDENCE]'
+        report_text += '\n'
 
     report_text += '\n'
 
