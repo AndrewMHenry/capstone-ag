@@ -7,13 +7,31 @@ def generate_report(filename):
 
     Return a string with the report text.
     """
-    with open(filename, 'r') as f:
-        string = f.read()
+    results = read_results(filename)
 
-    myobject = json.loads(string)
+    questions = results['questions']
+    numquestions = len(questions)
+    numcorrect = sum([subdict['score'] for subdict in questions.values()])
+
 
     # turn myobject into our report text
-    report_text = myobject['Name'] + ' got a grade of ' + myobject['Grade']
+    report_text = results['name'] + ' got a grade of ' + str(100 * numcorrect / numquestions) + '%\n'
+
+    for question, questiondict in questions.items():
+        report_text += (
+                'Our confidence that question '
+                + question
+                + ' is correct is '
+                + str(questiondict['correctConf'])
+                + '.\n')
+
+    report_text += '\n'
+
+    for question, questiondict in questions.items():
+        report_text += 'Question ' + question + ':\n'
+        report_text += '  Correctness confidence: ' + str(questiondict['correctConf']) + '\n'
+        report_text += '  Evaluation confidence: ' + str(questiondict['evalConf']) + '\n'
+        report_text += '\n'
 
     return report_text
 
