@@ -32,7 +32,5 @@ def main():
     write_results('graded', resultsDict)
 
 
-
-
-        
-
+if __name__ == '__main__':
+    main()
