@@ -12,6 +12,7 @@ import pylab as pl
 import numpy as np
 import random
 from sklearn import ensemble
+from autograde.results import write_results
 
 trDigits = load_digits()
 
@@ -134,12 +135,27 @@ def main():
     classifier = ensemble.RandomForestClassifier()
     classifier.fit(X_digits, y_digits)
     count = 0;
+    outObj = {}
+    outObj["name"] = "Test Student"
+    outObj["questions"] = {}
     for i in range(10):
+        outObj["questions"][str(i+1)] = {}
+        outObj["questions"][str(i+1)]["class"] = "";
+        outObj["questions"][str(i+1)]["probabilities"] = {}
         pl.matshow(trDigits.images[i])
         pl.matshow(arr[i])
         classification = classifier.predict(arr[i].reshape(1, -1))
-        print( classification, classifier.predict_proba(arr[i].reshape(1, -1)), (classification == i) )
+        prob = classifier.predict_proba(arr[i].reshape(1, -1))#, (classification == i)
+        outObj["questions"][str(i+1)]["class"] =  str(classification[0])
+        probDict = {};
+        for j in range(0,10):
+            probDict[str(j)] = prob[0][j]
+            #print (probDict)
+        outObj["questions"][str(i+1)]["probabilities"] = [probDict];
+        
+        print( classification, prob )
         if (classification == i):
             count = count +1;
+    write_results("saved-jsons/aiOut.json", outObj)
     print ("accuracy: ", count/10)
 main()
