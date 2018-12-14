@@ -1,0 +1,6 @@
+Name for ui executable (when we get there): report-ag
+(or something similar)
+
+We now have a working UI!!!  We'll still need to extend it,
+but the basic concept is there.  It reads some data from
+a JSON file and reports the student's name and grade.
