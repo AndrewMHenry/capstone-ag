@@ -103,13 +103,13 @@ def load_prelim_data():
     for i in range(5, 6):
         x = 2
         y = 2
-        sourceName = 'samples/s' + str(i) + '.png'
+        sourceName = 'samples/s' + str(i) + '.PNG'
         for j in range(0,9+1):
             #if (j == 7):
-            #    cropper(sourceName, (x, y, x + w - 1, y + h), str(j) + '/s' + str(i) + '_' + str(j) + '.png')    
+            #    cropper(sourceName, (x, y, x + w - 1, y + h), str(j) + '/s' + str(i) + '_' + str(j) + '.PNG')    
             #else:
             
-            cropper(sourceName, (x, y, x + w, y + h), str(j) + '/s' + str(i) + '_' + str(j) + '.png')    
+            cropper(sourceName, (x, y, x + w, y + h), str(j) + '/s' + str(i) + '_' + str(j) + '.PNG')    
             x = x + w + 1 #next number space, plus the pixel border
 
 def load_classifier():
@@ -124,7 +124,7 @@ def main():
     arr = []
     digits09 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
     for i in range(10):
-        im.append( Image.open( str(i) + '/s5_' + str(i) + '.png').convert("L") )
+        im.append( Image.open( str(i) + '/s5_' + str(i) + '.PNG').convert("L") )
         arr.append( load_img(im[i]) )
 #    print ("OUR   width:" + str(len(arr)) + "\theight: " + str(len(arr[0])) )
 #    print ("THEIR width:" + str(len(trDigits.images[0])) + "\theight: " + str(len(trDigits.images[0][0])))
