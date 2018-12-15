@@ -1,4 +1,4 @@
-from autograde.results import read_results
+from results import read_results
 import json
 
 CONFIDENCE_THRESHOLD = 0.6

@@ -4,7 +4,7 @@ import argparse
 import sys
 import numpy as np
 import random
-from autograde.results import read_results, write_results
+from results import read_results, write_results
 #from sklearn import ensemble
 
 def main():
