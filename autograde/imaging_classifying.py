@@ -16,6 +16,10 @@ from results import write_results
 
 trDigits = load_digits()
 
+INPUT_FILE = 'samples/PFAS_demo_sample.PNG'
+OUTPUT_FILE = "saved-jsons/aiOut.json"
+
+
 def close_up(img):
 #    img = Image.open(sourcePath)
     pixels = img.load()
@@ -83,7 +87,7 @@ def loadPFAS():
     #find calibration (only for physically scanned PFAS)
     
     #load inage
-    PFAS = Image.open('samples/PFAS_demo_sample.PNG').convert("L")
+    PFAS = Image.open(INPUT_FILE).convert("L")
     answerImg = {}; #answer dictionary
     answerArr = {};
     xOffset = 280;
@@ -156,6 +160,6 @@ def main():
         print( classification, prob )
         if (classification == i):
             count = count +1;
-    write_results("saved-jsons/aiOut.json", outObj)
+    write_results(OUTPUT_FILE, outObj)
     print ("accuracy: ", count/10)
 main()
