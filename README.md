@@ -16,18 +16,21 @@ Once all the necessary dependencies are installed, the following
 procedure can be used to demonstrate the current state of the
 AutoGrade project:
 
-- Change directory into `autograde`.
+- Starting from the top-level repository directory (`capstone-ag`),
+  change directory into `autograde`.
 
 - Open a new termial (by using CTRL+SHIFT+N), and
-  start the top-level script in the new terminal by running
-  `python3 autograde_toplevel.py`.
+  start the top-level script in the new terminal by
+  running
+
+      python3 autograde_toplevel.py
 
 - Return to the original terminal and place a PFAS image sample directly
   in the autograde directory to
   kick off the entire AutoGrade process.  In particular, to use the primary
   demo PFAS as the input image, run
 
-      `cp samples/PFAS_demo_sample.PNG .`
+      cp samples/PFAS_demo_sample.PNG .
 
   You should see text output in the other terminal, ending with the final
   grade report.  Typical
