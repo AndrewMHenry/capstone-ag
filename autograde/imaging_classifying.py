@@ -131,7 +131,27 @@ def loadPFAS():
     #train classifier with data
     
 
+def set_paths():
+    """Use command line arguments (if given) to set INPUT_FILE and OUTPUT_FILE."""
+    global INPUT_FILE, OUTPUT_FILE
+
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--input')
+    parser.add_argument('--output')
+
+    args = parser.parse_args()
+    input_filename = args.input
+    output_filename = args.output
+    
+    if input_filename is not None:
+        INPUT_FILE = input_filename
+    if output_filename is not None:
+        OUTPUT_FILE = output_filename
+
+
 def main():
+    set_paths()
     arr = loadPFAS()
     n_samples = len(trDigits.images)
     X_digits = trDigits.data / trDigits.data.max()
