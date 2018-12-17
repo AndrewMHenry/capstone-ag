@@ -61,7 +61,8 @@ def generate_report(filename):
 #    report_text += '\n'
 
     for question, questiondict in questions.items():
-        report_text += 'Question ' + question + ':\n'
+        report_text += 'Question ' + question
+        report_text += ' (' + ('correct' if questiondict['score'] else 'incorrect') + '):\n'
         report_text += '  Correctness confidence: ' + percentage(questiondict['correctConf']) + '\n'
         report_text += '  Evaluation confidence: ' + percentage(questiondict['evalConf']) + '\n'
 
