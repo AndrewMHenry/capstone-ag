@@ -1,5 +1,7 @@
+import shutil
 import tkinter as tk
 import tkinter.ttk as ttk
+from tkinter import font
 
 from agtextui import get_letter_grade
 from results import read_results
@@ -25,6 +27,26 @@ def get_fraction_correct(results):
     if not scores:
         raise ValueError('No scores found.')
     return sum(scores) / len(scores)
+
+
+
+
+DESTINATION_FILE = 'input/graded.json'
+LOCAL_SOURCE_FILE = 'local/graded.json'
+REMOTE_SOURCE_FILE = '???'
+
+COPY_PERIOD_MS = '1000'
+
+
+USE_LOCAL_SOURCE = True
+
+
+def receive_single_graded_file(destination):
+    """Copy a single graded results file to path destination."""
+    if USE_LOCAL_SOURCE:
+        shutil.copyfile(LOCAL_SOURCE_FILE, DESTINATION_FILE)
+    else:
+        raise NotImplementedError('TODO: Integrate scp transfer.')
 
 
 SAMPLE_GRADED_OUTPUT = 'saved-results/graded'
@@ -79,9 +101,9 @@ class CustomTreeview(ttk.Treeview):
         """ """
         values = [kwargs[column['name']] for column in self.columns]
         if tags is None:
-            super().insert(parent, index, values=values)
+            return super().insert(parent, index, values=values)
         else:
-            super().insert(parent, index, tags=tags, values=values)
+            return super().insert(parent, index, tags=tags, values=values)
 
 
 class AutoGradeGui(tk.Frame):
@@ -92,11 +114,17 @@ class AutoGradeGui(tk.Frame):
         super().__init__(parent, *args, **kwargs)
 
         self.student_results = {}
+        self.student_summary_ids = {}
 
         self.summary_label = tk.Label(self, text='Summary')
         self.detail_label = tk.Label(self, text='Details')
         self.summary_treeview = CustomTreeview(self, SUMMARY_COLUMNS)
         self.detail_treeview = CustomTreeview(self, DETAIL_COLUMNS)
+
+        self.summary_treeview.bind(
+                '<<TreeviewSelect>>',
+                self.handle_summary_treeview_selection
+                )
 
         self.detail_treeview.tag_configure('lowConfidence', foreground='red')
 
@@ -110,25 +138,59 @@ class AutoGradeGui(tk.Frame):
         self.grid_rowconfigure(0, weight=0)
         self.grid_rowconfigure(1, weight=1)
 
-    def read_graded_output(self, graded_output):
-        """Read information in graded output and add it to GUI."""
-        results = read_results(graded_output)
+        self.update_results()
+
+    def update_results(self):
+        """Get and add new results, and schedule to repeat periodically."""
+        try:
+            receive_single_graded_file(DESTINATION_FILE)
+            self.read_graded_output_file(DESTINATION_FILE)
+        except FileNotFoundError:
+            pass
+        self.after(COPY_PERIOD_MS, self.update_results)
+
+
+    def read_graded_output(self, results):
+        """Read information in graded output dict and add it to GUI.
+
+        The new output is not added if it corresponds to an already-
+        stored studentID.
+
+        """
         studentID = results['name']
+
+        if studentID in self.student_results:
+            return
+
         self.student_results[studentID] = results
 
         numericalGrade = 100 * get_fraction_correct(results)
         letterGrade = get_letter_grade(numericalGrade)
         scanOrder = str(len(self.student_results))
 
-        self.summary_treeview.insert(
-                '', 0,
+        self.student_summary_ids[studentID] = self.summary_treeview.insert(
+                '', 'end',
                 studentID=studentID,
                 numericalGrade=numericalGrade,
                 letterGrade=letterGrade,
                 scanOrder=scanOrder
                 )
 
-        for question, data in results['questions'].items():
+        #self.summary_treeview.selection_set()
+        self.show_student_details(studentID)
+
+    def read_graded_output_file(self, graded_output_file):
+        """Read information in graded output and add it to GUI."""
+        self.read_graded_output(read_results(graded_output_file))
+
+    def show_student_details(self, studentID):
+        """Show details for student with given ID.
+
+        (Initial delete inspired by top answer to StackOverflow question 22812134)
+
+        """
+        self.detail_treeview.delete(*self.detail_treeview.get_children())
+        for question, data in self.student_results[studentID]['questions'].items():
 
             score = data['score']
             evaluationConfidence = data['evalConf']
@@ -144,16 +206,36 @@ class AutoGradeGui(tk.Frame):
                     tags=tags,
                     question=question,
                     score=str(score),
-                    evaluationConfidence=str(evaluationConfidence),
+                    evaluationConfidence='{:.2f}'.format(evaluationConfidence),
                     )
 
+            self.detail_label.config(text='Details for ' + studentID)
 
+    def handle_summary_treeview_selection(self, event):
+        """Event handler to print studentID for focused student.
+
+        This method is designed to be bound to the <<TreeviewSelect>>
+        event of the summary_treeview.  When the selection status of
+        that Treeview changes, this method does one of the following:
+
+            (1) If a student is currently selected, show details
+                for that student.
+
+            (2) Otherwise, do nothing.
+
+        """
+        item = self.summary_treeview.item(self.summary_treeview.focus())
+        try:
+            studentID = item['values'][0]
+        except IndexError:
+            pass
+        else:
+            self.show_student_details(studentID)
 
 if __name__ == '__main__':
     root = tk.Tk()
     root.title('AutoGrade')
 
     gui = AutoGradeGui(root)
-    gui.read_graded_output(SAMPLE_GRADED_OUTPUT)
     gui.pack(fill='both', expand='true')
     root.mainloop()
