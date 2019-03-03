@@ -29,16 +29,14 @@ def get_fraction_correct(results):
     return sum(scores) / len(scores)
 
 
-
-
 DESTINATION_FILE = 'input/graded.json'
 LOCAL_SOURCE_FILE = 'local/graded.json'
-REMOTE_SOURCE_FILE = '???'
+REMOTE_SOURCE_FILE = 'graded.json'
 
-COPY_PERIOD_MS = '1000'
+COPY_PERIOD_MS = 1000
 
 
-USE_LOCAL_SOURCE = True
+USE_LOCAL_SOURCE = False
 
 
 def receive_single_graded_file(destination):
@@ -46,10 +44,7 @@ def receive_single_graded_file(destination):
     if USE_LOCAL_SOURCE:
         shutil.copyfile(LOCAL_SOURCE_FILE, DESTINATION_FILE)
     else:
-        raise NotImplementedError('TODO: Integrate scp transfer.')
-
-
-SAMPLE_GRADED_OUTPUT = 'saved-results/graded'
+        transfer(REMOTE_SOURCE_FILE, DESTINATION_FILE)
 
 
 SUMMARY_COLUMNS = [
@@ -98,7 +93,7 @@ class CustomTreeview(ttk.Treeview):
         self.columns = list(columns)
 
     def insert(self, parent, index, tags=None, **kwargs):
-        """ """
+        """Call super() insert with convenient value specifications."""
         values = [kwargs[column['name']] for column in self.columns]
         if tags is None:
             return super().insert(parent, index, values=values)
@@ -176,7 +171,6 @@ class AutoGradeGui(tk.Frame):
                 scanOrder=scanOrder
                 )
 
-        #self.summary_treeview.selection_set()
         self.show_student_details(studentID)
 
     def read_graded_output_file(self, graded_output_file):
@@ -209,28 +203,20 @@ class AutoGradeGui(tk.Frame):
                     evaluationConfidence='{:.2f}'.format(evaluationConfidence),
                     )
 
-            self.detail_label.config(text='Details for ' + studentID)
+        self.detail_label.config(text='Details for ' + studentID)
 
     def handle_summary_treeview_selection(self, event):
         """Event handler to print studentID for focused student.
 
         This method is designed to be bound to the <<TreeviewSelect>>
         event of the summary_treeview.  When the selection status of
-        that Treeview changes, this method does one of the following:
-
-            (1) If a student is currently selected, show details
-                for that student.
-
-            (2) Otherwise, do nothing.
+        that Treeview changes, this method shows the details for
+        the currently selected student.
 
         """
         item = self.summary_treeview.item(self.summary_treeview.focus())
-        try:
-            studentID = item['values'][0]
-        except IndexError:
-            pass
-        else:
-            self.show_student_details(studentID)
+        studentID = item['values'][0]
+        self.show_student_details(studentID)
 
 if __name__ == '__main__':
     root = tk.Tk()
