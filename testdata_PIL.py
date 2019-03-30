@@ -1,6 +1,8 @@
 from PIL import Image
 import pylab as pl
 import numpy as np
+import matplotlib as plt
+plt.rcParams.update({'figure.max_open_warning': 0})
 
 def load_img(img):
     imgarr = np.array(img) 
@@ -74,6 +76,7 @@ def processPage():
     digitCtr = -1
 
     # Coordinates of the top left corner of the first (hand-written) box
+    # Possibly starting at second row.
     topLeftx = 204
     topLefty = 431
     chars = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"]
@@ -82,7 +85,7 @@ def processPage():
 
     # 96 (hand-written) boxes on each page; started counting at 1 not 0
     while (pageCtr != 17):
-        if (boxCtr == 97):
+        if (boxCtr == 96):
             boxCtr = 0
             digitCtr = -1
             pageCtr += 1
@@ -93,7 +96,7 @@ def processPage():
         imageName = ("data-samples/PNGs/agscan1200_0000-" + str(pageCtr) + ".PNG")
         imageFile = Image.open(imageName).convert("L")
 
-        while (boxCtr != 97):
+        while (boxCtr != 96):
             boxCtr += 1
             digitCtr += 1
 
@@ -102,12 +105,12 @@ def processPage():
 
             if (boxCtr > 1) and (boxCtr % 12 != 1):
                 topLeftx += 109             # 109px to the right is the next box
-            elif (boxCtr % 12 == 1):
+            elif (boxCtr > 1) and (boxCtr % 12 == 1):
                 topLeftx = 207
                 topLefty = topLefty + 196   # 196px downward is the next row
 
 # originally +105
-            box = (topLeftx, topLefty, topLeftx + 85, topLefty + 85)
+            box = (topLeftx, topLefty, topLeftx + 86, topLefty + 86)
             boxImg = imageFile.crop(box)
             boxImgName = "data-samples/gathered_data/" + chars[digitCtr] + "/s" + chars[digitCtr] + "_" + str(charCtr[digitCtr]) + ".PNG"
             boxImg = boxImg.resize((32,32), resample=4)
