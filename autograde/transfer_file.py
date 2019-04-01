@@ -30,3 +30,15 @@ def transfer(source_path, destination_path):
     ssh.connect(hostname=target_host, username=USERNAME, password=PASSWORD)
     with SCPClient(ssh.get_transport()) as scp:
         scp.get(source_path, destination_path)  # gets the copy of the file
+
+
+def send(source_path, destination_path):
+    """Copy local source_path to remote destination_path."""
+    ssh = SSHClient()
+
+    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    target_host = REMOTE_HOST_IP
+
+    ssh.connect(hostname=target_host, username=USERNAME, password=PASSWORD)
+    with SCPClient(ssh.get_transport()) as scp:
+        scp.put(source_path, destination_path)  # gets the copy of the file

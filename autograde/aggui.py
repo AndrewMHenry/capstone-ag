@@ -4,8 +4,8 @@ import tkinter.ttk as ttk
 from tkinter import font
 
 from agtextui import get_letter_grade
-from results import read_results
-from transfer_file import transfer
+from results import read_results, write_results
+from transfer_file import transfer, send
 
 """
 Program organization adapted from StackOverflow question:
@@ -36,7 +36,14 @@ REMOTE_SOURCE_FILE = 'graded.json'
 COPY_PERIOD_MS = 1000
 
 
-USE_LOCAL_SOURCE = False
+USE_LOCAL_SOURCE = True
+
+
+NUM_QUESTIONS = 20
+
+ANSWER_KEY_FILE = 'output/answer_key.json'
+LOCAL_ANSWER_KEY_FILE = 'local/answer_key.json'
+REMOTE_ANSWER_KEY_FILE = 'answer_key.json'
 
 
 def receive_single_graded_file(destination):
@@ -45,6 +52,14 @@ def receive_single_graded_file(destination):
         shutil.copyfile(LOCAL_SOURCE_FILE, DESTINATION_FILE)
     else:
         transfer(REMOTE_SOURCE_FILE, DESTINATION_FILE)
+
+
+def send_answer_key_file(source):
+    """Copy answer key file `source` to remote board."""
+    if USE_LOCAL_SOURCE:
+        shutil.copyfile(source, LOCAL_ANSWER_KEY_FILE)
+    else:
+        send(source, REMOTE_ANSWER_KEY_FILE)
 
 
 SUMMARY_COLUMNS = [
@@ -101,6 +116,58 @@ class CustomTreeview(ttk.Treeview):
             return super().insert(parent, index, tags=tags, values=values)
 
 
+class AnswerKeyWidget(tk.Frame):
+
+    def __init__(self, parent, *args, **kwargs):
+        """Initialize AnswerKeyWidget."""
+        super().__init__(parent, *args, **kwargs)
+        self.labels = [
+                self.create_question_label(question_number)
+                for question_number in range(NUM_QUESTIONS)
+                ]
+        self.entries = [
+                tk.Entry(self)
+                for i in range(NUM_QUESTIONS)
+                ]
+        self.go_button = tk.Button(
+                self,
+                text='Save and apply',
+                command=self.apply_answer_key
+                )
+
+        for row in range(NUM_QUESTIONS):
+            self.labels[row].grid(row=row, column=0, sticky='NSEW')
+            self.entries[row].grid(row=row, column=1, sticky='NSEW')
+        self.go_button.grid(
+                row=NUM_QUESTIONS, column=0, columnspan=2, sticky='NSEW'
+                )
+
+    def create_question_label(self, question_number):
+        """Create and return question label for 0-based question number."""
+        question_name = self.get_question_name(question_number)
+        label_text = 'Question {}.'.format(question_name)
+        return tk.Label(self, text=label_text)
+
+    def get_question_name(self, question_number):
+        """Get name of question from 0-based question_number."""
+        return str(question_number + 1)
+
+    def create_answer_key(self):
+        """Return answer key data structure."""
+        answer_key = {}
+        for question_number in range(NUM_QUESTIONS):
+            question_name = self.get_question_name(question_number)
+            entry = self.entries[question_number]
+            answer_key[question_name] = entry.get()
+
+        return answer_key
+
+    def apply_answer_key(self):
+        """Callback to save and send answer key."""
+        write_results(ANSWER_KEY_FILE, self.create_answer_key())
+        send_answer_key_file(ANSWER_KEY_FILE)
+
+
 class AutoGradeGui(tk.Frame):
     """Custom widget to implement AutoGrade GUI."""
 
@@ -113,8 +180,10 @@ class AutoGradeGui(tk.Frame):
 
         self.summary_label = tk.Label(self, text='Summary')
         self.detail_label = tk.Label(self, text='Details')
+        self.answer_label = tk.Label(self, text='Answer Key')
         self.summary_treeview = CustomTreeview(self, SUMMARY_COLUMNS)
         self.detail_treeview = CustomTreeview(self, DETAIL_COLUMNS)
+        self.answer_key = AnswerKeyWidget(self)
 
         self.summary_treeview.bind(
                 '<<TreeviewSelect>>',
@@ -127,9 +196,12 @@ class AutoGradeGui(tk.Frame):
         self.summary_treeview.grid(column=0, row=1, sticky='NSEW')
         self.detail_label.grid(column=1, row=0, sticky='NSEW')
         self.detail_treeview.grid(column=1, row=1, sticky='NSEW')
+        self.answer_label.grid(column=2, row=0, sticky='NSEW')
+        self.answer_key.grid(column=2, row=1, sticky='NSEW')
 
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=1)
+        self.grid_columnconfigure(2, weight=1)
         self.grid_rowconfigure(0, weight=0)
         self.grid_rowconfigure(1, weight=1)
 
