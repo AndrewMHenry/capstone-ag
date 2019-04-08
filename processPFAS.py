@@ -81,6 +81,7 @@ def processPage():
 # --
     imageName = ("PFAS_demo_sample-1.PNG")
     imageFile = Image.open(imageName).convert("L")
+    imageFile = imageFile.resize((1700,2200), resample=4)
     while (boxCtr != 264):
         if (boxCtr == 133):
             topLefty = 202
