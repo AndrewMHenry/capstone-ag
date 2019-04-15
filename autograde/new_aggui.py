@@ -35,7 +35,7 @@ COPY_PERIOD_MS = 1000
 USE_LOCAL_SOURCE = True
 
 
-NUM_QUESTIONS = 20
+NUM_QUESTIONS = 22
 
 """on-board locations"""
 DESTINATION_FILE = 'input/graded.json'
