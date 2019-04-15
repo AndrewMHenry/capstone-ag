@@ -29,10 +29,6 @@ def get_fraction_correct(results):
     return sum(scores) / len(scores)
 
 
-DESTINATION_FILE = 'input/graded.json'
-LOCAL_SOURCE_FILE = 'local/graded.json'
-REMOTE_SOURCE_FILE = 'graded.json'
-
 COPY_PERIOD_MS = 1000
 
 
@@ -41,8 +37,16 @@ USE_LOCAL_SOURCE = True
 
 NUM_QUESTIONS = 20
 
+"""on-board locations"""
+DESTINATION_FILE = 'input/graded.json'
 ANSWER_KEY_FILE = 'output/answer_key.json'
+
+"""dummy local locations"""
+LOCAL_SOURCE_FILE = 'local/graded.json'
 LOCAL_ANSWER_KEY_FILE = 'local/answer_key.json'
+
+"""actual remote locations"""
+REMOTE_SOURCE_FILE = 'graded.json'
 REMOTE_ANSWER_KEY_FILE = 'answer_key.json'
 
 
