@@ -53,10 +53,10 @@ def processPFAS(FILENAME):
     # take answer strips out of the sheet & build dictionary
     #
     PFAS_dict["questions"] = {}
-    for i in range(1,10):
+    for i in range(1,11):
         PFAS_dict["questions"][str(i)] = PFAS_image.crop( (x1, y1, x2, y1+yOffset-10) );
         y1 = y1 + yOffset + 10
-        #pl.matshow(PFAS_dict["questions"][str(i)])
+        pl.matshow(PFAS_dict["questions"][str(i)])
     
     #
     # return dictionary
