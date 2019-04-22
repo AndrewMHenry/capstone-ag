@@ -19,7 +19,7 @@ import time
 import pprint
 pp = pprint.PrettyPrinter(depth=5)
 
-FILENAME = 'filled_PFAS.PNG'
+FILENAME = 'filled_PFAS.png'
 
 def processPFAS(FILENAME):
     #

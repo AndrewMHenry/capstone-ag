@@ -68,7 +68,9 @@ def close_up(sourcePath):
     #image1 = Image.open(destPath).convert("L")   
     cropped = img.resize((8,8), resample=5)
     load_img(cropped)
-    cropped.save(sourcePath, 'PNG')
+    cropped.save(sourcePath, 'png')
+import argparse
+import collections
 
 # --------------------------------------------------------------------------------------------------------------
 def processPage():

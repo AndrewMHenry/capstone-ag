@@ -6,6 +6,11 @@ Welcome to Team AutoGrade's Capstone project repository!
 Team AutoGrade (or Team AG) consists of Kayla Carrigan,
 Andrew Henry, Yvonne Kamdem, Barrett Marsh, and Caroline Nseir.
 
+# Credits
+
+The digit classification code is based heavily on the example by Bikramjot Singh Hanzra found at http://hanzratech.in/2015/02/24/handwritten-digit-recognition-using-opencv-sklearn-and-python.html;.  This includes,
+in particular, the files `digits_cls.pkl` and
+
 # Documentation Links
 
 - [Developer Setup Instructions](docs/developer-setup-guide.md)
