@@ -62,6 +62,6 @@ def processPFAS(FILENAME):
     # return dictionary
     #
     
-    return dict
+    return PFAS_dict
     
 processPFAS(FILENAME)
