@@ -12,14 +12,14 @@ import pylab as pl
 import numpy as np
 import random
 from sklearn import ensemble
-from autograde.results import write_results
-from autograde.results import read_results
+#from autograde.results import write_results
+#from autograde.results import read_results
 from statistics import mean
 import time
 import pprint
 pp = pprint.PrettyPrinter(depth=5)
 
-FILENAME = 'filled_PFAS.png'
+FILENAME = 'Image_00004.bmp'
 
 def processPFAS(FILENAME):
     #
@@ -31,10 +31,10 @@ def processPFAS(FILENAME):
     #
     # Set coordinates
     #
-    x1 = 405
+    x1 = 800
     y1 = 0
-    x2 = 1700
-    y2 = 235
+    x2 = 3000
+    y2 = 490
     #
     # get StudentID
     #
@@ -44,18 +44,18 @@ def processPFAS(FILENAME):
     #
     # Set coordinates
     #
-    x1 = 290
-    y1 = 245
-    x2 = 1495
+    x1 = 590
+    y1 = 505
+    x2 = 3000
     y2 = 395
-    yOffset = 147.5
+    yOffset = 300
     #
     # take answer strips out of the sheet & build dictionary
     #
     PFAS_dict["questions"] = {}
     for i in range(1,11):
         PFAS_dict["questions"][str(i)] = PFAS_image.crop( (x1, y1, x2, y1+yOffset-10) );
-        y1 = y1 + yOffset + 10
+        y1 = y1 + yOffset + 12.5
         pl.matshow(PFAS_dict["questions"][str(i)])
     
     #
