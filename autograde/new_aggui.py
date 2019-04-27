@@ -35,15 +35,15 @@ COPY_PERIOD_MS = 1000
 USE_LOCAL_SOURCE = True
 
 
-NUM_QUESTIONS = 22
+NUM_QUESTIONS = 10
 
 """on-board locations"""
 DESTINATION_FILE = 'input/graded.json'
 ANSWER_KEY_FILE = 'output/answer_key.json'
 
 """dummy local locations"""
-LOCAL_SOURCE_FILE = 'local/graded.json'
-LOCAL_ANSWER_KEY_FILE = 'local/answer_key.json'
+LOCAL_SOURCE_FILE = 'graded.json'
+LOCAL_ANSWER_KEY_FILE = 'answer_key.json'
 
 """actual remote locations"""
 REMOTE_SOURCE_FILE = 'graded.json'
@@ -67,7 +67,7 @@ def send_answer_key_file(source):
 
 
 SUMMARY_COLUMNS = [
-#        dict(name='studentID', title='Student ID', anchor=tk.W),
+        dict(name='studentID', title='Student ID', anchor=tk.W),
         dict(name='scanOrder', title='Scan Order', anchor=tk.E),
         dict(name='numericalGrade', title='Numerical Grade', anchor=tk.E),
         dict(name='letterGrade', title='Letter Grade', anchor=tk.CENTER),
@@ -228,7 +228,7 @@ class AutoGradeGui(tk.Frame):
         stored studentID.
 
         """
-        studentID = results['name']
+        studentID = results['StudentID']['answer']
 
         if studentID in self.student_results:
             return
@@ -260,10 +260,15 @@ class AutoGradeGui(tk.Frame):
 
         """
         self.detail_treeview.delete(*self.detail_treeview.get_children())
-        for question, data in self.student_results[studentID]['questions'].items():
+        try:
+            question_items = self.student_results[studentID]['questions'].items()
+        except KeyError as e:
+            print(self.student_results)
+            raise e
+        for question, data in question_items:
 
             score = data['score']
-            evaluationConfidence = data['evalConf']
+            evaluationConfidence = data['min_conf']
 
             if evaluationConfidence < EVAL_CONFIDENCE_THRESHOLD:
                 tags = 'lowConfidence'
@@ -291,7 +296,7 @@ class AutoGradeGui(tk.Frame):
 
         """
         item = self.summary_treeview.item(self.summary_treeview.focus())
-        studentID = item['values'][0]
+        studentID = str(item['values'][0])
         self.show_student_details(studentID)
 
 if __name__ == '__main__':

@@ -29,7 +29,7 @@ StripResult = collections.namedtuple('StripResult', 'string min_conf')
 
 INPUT_FILENAME = 'newAItestdata.png'
 
-SHOW_IMAGES = False
+SHOW_IMAGES = True
 
 
 def process_strip(strip):
@@ -68,20 +68,23 @@ def process_strip(strip):
         try:
             roi = cv2.resize(roi, (28, 28), interpolation=cv2.INTER_AREA)
             roi = cv2.dilate(roi, (3, 3))
+
+            # Calculate the HOG features
+            roi_hog_fd = hog(
+                    roi, orientations=9, pixels_per_cell=(14, 14),
+                    cells_per_block=(1, 1), visualise=False
+                    )
+
         except:
-            pass#pdb.set_trace()
+            character = '?'
 
-        # Calculate the HOG features
-        roi_hog_fd = hog(
-                roi, orientations=9, pixels_per_cell=(14, 14),
-                cells_per_block=(1, 1), visualise=False
-                )
+        else:
+            features = np.array([roi_hog_fd], 'float64')
+            nbr = clf.predict(features)
+            character = str(int(nbr[0]))
+            #probs = clf.predict_proba(features)
 
-        features = np.array([roi_hog_fd], 'float64')
-        nbr = clf.predict(features)
-        #probs = clf.predict_proba(features)
-
-        string += str(int(nbr[0]))
+        string += character
         #conf = probs[0]
         #min_conf = min(min_conf, 
 
@@ -121,7 +124,7 @@ def process_strips(strips):
     sid_min_conf = sid_results.min_conf
 
     results['StudentID'] = {
-            'string': sid_string,
+            'answer': sid_string,
             'min_conf': sid_min_conf
             }
 
@@ -130,13 +133,15 @@ def process_strips(strips):
         print('Processing question #{}'.format(question))
         try:
             strip_results = process_strip(strip)
-        except:
-            pass#pdb.set_trace()
-        string = strip_results.string
-        min_conf = strip_results.min_conf
+        except Exception as e:
+            string = 'ERROR'
+            min_conf = 0
+        else:
+            string = strip_results.string
+            min_conf = strip_results.min_conf
 
         results['questions'][question] = {
-                'string': string,
+                'answer': string,
                 'min_conf': min_conf
                 }
 
