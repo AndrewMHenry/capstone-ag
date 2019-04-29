@@ -16,6 +16,7 @@ from sklearn.externals import joblib
 from skimage.feature import hog
 import numpy as np
 
+import matplotlib.pyplot as plt
 
 import pdb
 
@@ -29,7 +30,7 @@ StripResult = collections.namedtuple('StripResult', 'string min_conf')
 
 INPUT_FILENAME = 'newAItestdata.png'
 
-SHOW_IMAGES = True
+SHOW_IMAGES = False
 
 MIN_HEIGHT_THRESHOLD = 60  # 20% of strip height
 
@@ -48,7 +49,7 @@ def process_strip(strip):
     ret, im_th = cv2.threshold(im_gray, 90, 255, cv2.THRESH_BINARY_INV)
 
     # Find contours in the image
-    ctrs, hier = cv2.findContours(im_th.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    ctrs, hier = cv2.findContours(im_th.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2:]
 
     # Get rectangles contains each contour
     rects = [cv2.boundingRect(ctr) for ctr in ctrs]
@@ -100,8 +101,9 @@ def process_strip(strip):
             cv2.putText(im_gray, character, (rect[0], rect[1]),cv2.FONT_HERSHEY_DUPLEX, 2, (0, 255, 255), 3)
 
     if SHOW_IMAGES:
-        cv2.imshow("Resulting Image with Rectangular ROIs", im_gray)
-        cv2.waitKey()
+        plt.imshow(im_gray, interpolation='bicubic')
+        #cv2.imshow("Resulting Image with Rectangular ROIs", im_gray)
+        #cv2.waitKey()
 
     return StripResult(string, min_conf)
 
@@ -170,4 +172,6 @@ if __name__ == '__main__':
     strips = processPFAS(pfas_filename)
     results = process_strips(strips)
 
+    if SHOW_IMAGES:
+        plt.show()
     write_results(output, results)

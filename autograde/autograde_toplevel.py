@@ -19,20 +19,20 @@ def move_file(filename):
 def main():
     while 1:
         # Search for file
-        aiInput = "PFAS_demo_sample.PNG"
+        aiInput = "scannedPFAS"
         aiResults = "aiOut.json"
-        key = "ai-answer-key-correct.txt"
-        graded = "graded"
-
+        key = "answer_key.json"
+        graded = "graded.json"
+        os.system("./scanning-module.sh")
         if os.path.exists(aiInput) == True:
-            os.system("python3 imaging_classifying.py --input " + aiInput + " --output " + aiResults)
+            os.system("python3 classify_PFAS.py " + aiInput + " " + aiResults)
             move_file(aiInput)
         if os.path.exists(aiResults) == True:
-            os.system("python3 grading.py --results " + aiResults + " --answerkey " + key)
+            os.system("python3 new_grading.py --results " + aiResults + " --answerkey " + key + " --output " + graded)
             move_file(aiResults)
-        if os.path.exists(graded) == True:
-            os.system("python3 agtextui.py " + graded)
-            move_file(graded)
+#        if os.path.exists(graded) == True:
+#            os.system("python3 agtextui.py " + graded)
+#            move_file(graded)
 
 if __name__ == '__main__':
     main()

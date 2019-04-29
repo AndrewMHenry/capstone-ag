@@ -19,7 +19,7 @@ import time
 import pprint
 pp = pprint.PrettyPrinter(depth=5)
 
-FILENAME = 'Image_00004.bmp'
+#FILENAME = 'traced.png'
 
 def processPFAS(FILENAME):
     #
@@ -27,14 +27,19 @@ def processPFAS(FILENAME):
     #
     PFAS_image = Image.open(FILENAME).convert("L");
     PFAS_dict = {}
-    
+#    PFAS_image = PFAS_image.crop((0,0,2500,3200));
+#    pl.matshow(PFAS_image)
+#    PFAS_image = PFAS_image.resize((3400,4400), resample=4);
+#    PFAS_image.save('newtrace.png', 'PNG')
+#    pl.matshow(PFAS_image)
+
     #
     # Set coordinates
     #
-    x1 = 800
+    x1 = 610
     y1 = 0
-    x2 = 3000
-    y2 = 490
+    x2 = 2500
+    y2 = 350
     #
     # get StudentID
     #
@@ -44,11 +49,11 @@ def processPFAS(FILENAME):
     #
     # Set coordinates
     #
-    x1 = 590
-    y1 = 505
-    x2 = 3000
+    x1 = 450
+    y1 = 365
+    x2 = 2230
     y2 = 395
-    yOffset = 300
+    yOffset = 225
     #
     # take answer strips out of the sheet & build dictionary
     #
@@ -64,4 +69,4 @@ def processPFAS(FILENAME):
     
     return PFAS_dict
     
-processPFAS(FILENAME)
+#processPFAS(FILENAME)

@@ -1,6 +1,7 @@
 #!/bin/bash
 
-while true; do
-    echo {time}
-    scanimage >testimage.png;
-done
+#echo {time}
+scanimage >testPFAS;
+if [ -s testPFAS ]; then
+	cp testPFAS scannedPFAS
+fi

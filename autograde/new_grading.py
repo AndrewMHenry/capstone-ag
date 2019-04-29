@@ -12,6 +12,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--results")
     parser.add_argument("--answerkey")
+    parser.add_argument("--output")
 
     args = parser.parse_args()
 
@@ -26,7 +27,7 @@ def main():
         resultsDict['questions'][name]['score'] = int(studentAnswer == answer)
         # the "min_conf" field just passes through as-is
 
-    write_results('graded', resultsDict)
+    write_results(args.output, resultsDict)
 
 
 if __name__ == '__main__':
