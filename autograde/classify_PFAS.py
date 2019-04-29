@@ -31,6 +31,8 @@ INPUT_FILENAME = 'newAItestdata.png'
 
 SHOW_IMAGES = True
 
+MIN_HEIGHT_THRESHOLD = 60  # 20% of strip height
+
 
 def process_strip(strip):
     """FINISH ADAPTING THIS!!!"""
@@ -57,6 +59,10 @@ def process_strip(strip):
     # For each rectangular region, calculate HOG features and predict
     # the digit using Linear SVM.
     for rect in sorted(rects, key=lambda rect: rect[0]):
+
+        height = rect[3]
+        if height < MIN_HEIGHT_THRESHOLD:
+            continue
 
         # Make the rectangular region around the digit
         leng = int(rect[3] * 1.6)
@@ -91,7 +97,7 @@ def process_strip(strip):
         if SHOW_IMAGES:
             # Draw the rectangles
             cv2.rectangle(im_gray, (rect[0], rect[1]), (rect[0] + rect[2], rect[1] + rect[3]), (0, 255, 0), 3)
-            cv2.putText(im_gray, str(int(nbr[0])), (rect[0], rect[1]),cv2.FONT_HERSHEY_DUPLEX, 2, (0, 255, 255), 3)
+            cv2.putText(im_gray, character, (rect[0], rect[1]),cv2.FONT_HERSHEY_DUPLEX, 2, (0, 255, 255), 3)
 
     if SHOW_IMAGES:
         cv2.imshow("Resulting Image with Rectangular ROIs", im_gray)
@@ -134,6 +140,7 @@ def process_strips(strips):
         try:
             strip_results = process_strip(strip)
         except Exception as e:
+            pdb.set_trace()
             string = 'ERROR'
             min_conf = 0
         else:
