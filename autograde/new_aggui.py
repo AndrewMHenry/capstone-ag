@@ -81,6 +81,7 @@ DETAIL_COLUMNS = [
             title='Evaluation Confidence',
             anchor=tk.E
             ),
+        dict(name='answer', title='Answer', anchor=tk.E),
         ]
 
 
@@ -244,7 +245,7 @@ class AutoGradeGui(tk.Frame):
                 studentID=studentID,
                 numericalGrade=numericalGrade,
                 letterGrade=letterGrade,
-                scanOrder=scanOrder
+                scanOrder=scanOrder,
                 )
 
         self.show_student_details(studentID)
@@ -269,6 +270,7 @@ class AutoGradeGui(tk.Frame):
 
             score = data['score']
             evaluationConfidence = data['min_conf']
+            answer = data['answer']
 
             if evaluationConfidence < EVAL_CONFIDENCE_THRESHOLD:
                 tags = 'lowConfidence'
@@ -282,6 +284,7 @@ class AutoGradeGui(tk.Frame):
                     question=question,
                     score=str(score),
                     evaluationConfidence='{:.2f}'.format(evaluationConfidence),
+                    answer=answer,
                     )
 
         self.detail_label.config(text='Details for ' + studentID)

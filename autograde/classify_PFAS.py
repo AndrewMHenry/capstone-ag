@@ -32,7 +32,7 @@ INPUT_FILENAME = 'newAItestdata.png'
 
 SHOW_IMAGES = False
 
-MIN_HEIGHT_THRESHOLD = 60  # 20% of strip height
+MIN_HEIGHT_THRESHOLD = 50  # ~17% of strip height
 
 
 def process_strip(strip):
@@ -84,16 +84,27 @@ def process_strip(strip):
 
         except:
             character = '?'
+            conf = 0
 
         else:
             features = np.array([roi_hog_fd], 'float64')
             nbr = clf.predict(features)
-            character = str(int(nbr[0]))
-            #probs = clf.predict_proba(features)
+
+            # digit (int) is the class of the written symbol
+            digit = int(nbr[0])
+
+            # protip: assign probs BEFORE using
+            probs = clf.predict_proba(features)
+
+            # conf is the probability for digit
+            # (assumes probs is indexed by digit (in order))
+            conf = probs[0][digit]
+
+            # character is the string version of digit
+            character = str(digit)
 
         string += character
-        #conf = probs[0]
-        #min_conf = min(min_conf, 
+        min_conf = min(min_conf, conf)
 
         if SHOW_IMAGES:
             # Draw the rectangles
