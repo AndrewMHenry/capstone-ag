@@ -16,8 +16,15 @@ def move_file(filename):
     shutil.move(filename, moved_filename)
 
 
+def file_exists(filename):
+    return os.path.isfile(QUIT_FILE)
+
+
+QUIT_FILE = 'quit'
+
+
 def main():
-    while 1:
+    while not file_exists(QUIT_FILE):
         # Search for file
         aiInput = "scannedPFAS"
         aiResults = "aiOut.json"
