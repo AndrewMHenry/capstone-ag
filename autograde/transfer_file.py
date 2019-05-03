@@ -16,7 +16,7 @@ def transfer():
         scp.get('my_file2.txt')  # gets the copy of myfile 
 
 
-REMOTE_HOST_IP = '127.0.0.1'  #replace by address of processing unit
+REMOTE_HOST_IP = '10.200.137.240'  #replace by address of processing unit
 USERNAME = 'autograde'
 PASSWORD = 'autograde'
 

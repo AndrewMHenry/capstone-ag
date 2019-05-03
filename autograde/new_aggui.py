@@ -32,7 +32,7 @@ def get_fraction_correct(results):
 COPY_PERIOD_MS = 1000
 
 
-USE_LOCAL_SOURCE = True
+USE_LOCAL_SOURCE = False
 
 
 NUM_QUESTIONS = 10
@@ -199,14 +199,14 @@ class AutoGradeGui(tk.Frame):
 
         self.summary_label.grid(column=0, row=0, sticky='NSEW')
         self.summary_treeview.grid(column=0, row=1, sticky='NSEW')
-        self.detail_label.grid(column=1, row=0, sticky='NSEW')
-        self.detail_treeview.grid(column=1, row=1, sticky='NSEW')
-        self.answer_label.grid(column=2, row=0, sticky='NSEW')
-        self.answer_key.grid(column=2, row=1, sticky='NSEW')
+        self.detail_label.grid(column=0, row=2, sticky='NSEW')
+        self.detail_treeview.grid(column=0, row=3, sticky='NSEW')
+        self.answer_label.grid(column=1, row=0, sticky='NSEW')
+        self.answer_key.grid(column=1, row=1, rowspan=3, sticky='NSEW')
 
         self.grid_columnconfigure(0, weight=1)
-        self.grid_columnconfigure(1, weight=1)
-        self.grid_columnconfigure(2, weight=1)
+        self.grid_columnconfigure(1, weight=0)
+        #self.grid_columnconfigure(2, weight=1)
         self.grid_rowconfigure(0, weight=0)
         self.grid_rowconfigure(1, weight=1)
 
