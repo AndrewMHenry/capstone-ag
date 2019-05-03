@@ -32,7 +32,7 @@ def get_fraction_correct(results):
 COPY_PERIOD_MS = 1000
 
 
-USE_LOCAL_SOURCE = False
+USE_LOCAL_SOURCE = True
 
 
 NUM_QUESTIONS = 10
