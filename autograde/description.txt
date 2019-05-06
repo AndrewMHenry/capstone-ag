@@ -1,0 +1,4 @@
+The histogram to the (right/left) shows the
+accuracy scores achieved by the AutoGrade system
+(running locally on a Linux laptop without the
+processing unit).
