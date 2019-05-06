@@ -40,7 +40,7 @@ COPY_PERIOD_MS = 1000
 
 USE_LOCAL_SOURCE = False
 
-REMOTE_BASE = 'capstone-ag/autograde'
+REMOTE_BASE = 'capstone-ag/autograde/'
 
 NUM_QUESTIONS = 10
 
@@ -53,8 +53,8 @@ LOCAL_SOURCE_FILE = 'graded.json'
 LOCAL_ANSWER_KEY_FILE = 'answer_key.json'
 
 """actual remote locations"""
-REMOTE_SOURCE_FILE = os.path.join(REMOTE_BASE, 'graded.json')
-REMOTE_ANSWER_KEY_FILE = os.path.join(REMOTE_BASE, 'answer_key.json')
+REMOTE_SOURCE_FILE = REMOTE_BASE + 'graded.json'
+REMOTE_ANSWER_KEY_FILE = REMOTE_BASE + 'answer_key.json'
 
 
 def receive_single_graded_file(destination):
