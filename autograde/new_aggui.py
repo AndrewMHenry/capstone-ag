@@ -1,3 +1,5 @@
+import os
+import scp
 import shutil
 import tkinter as tk
 import tkinter.ttk as ttk
@@ -29,11 +31,16 @@ def get_fraction_correct(results):
     return sum(scores) / len(scores)
 
 
+
+ID_PREFIX = '#'
+
+
 COPY_PERIOD_MS = 1000
 
 
-USE_LOCAL_SOURCE = True
+USE_LOCAL_SOURCE = False
 
+REMOTE_BASE = 'capstone-ag/autograde'
 
 NUM_QUESTIONS = 10
 
@@ -46,8 +53,8 @@ LOCAL_SOURCE_FILE = 'graded.json'
 LOCAL_ANSWER_KEY_FILE = 'answer_key.json'
 
 """actual remote locations"""
-REMOTE_SOURCE_FILE = 'graded.json'
-REMOTE_ANSWER_KEY_FILE = 'answer_key.json'
+REMOTE_SOURCE_FILE = os.path.join(REMOTE_BASE, 'graded.json')
+REMOTE_ANSWER_KEY_FILE = os.path.join(REMOTE_BASE, 'answer_key.json')
 
 
 def receive_single_graded_file(destination):
@@ -55,7 +62,12 @@ def receive_single_graded_file(destination):
     if USE_LOCAL_SOURCE:
         shutil.copyfile(LOCAL_SOURCE_FILE, DESTINATION_FILE)
     else:
-        transfer(REMOTE_SOURCE_FILE, DESTINATION_FILE)
+        try:
+            transfer(REMOTE_SOURCE_FILE, DESTINATION_FILE)
+        except scp.SCPException as e:
+            print('SOILED IT! ({})'.format(e))
+        else:
+            print('FOUND IT!')
 
 
 def send_answer_key_file(source):
@@ -242,7 +254,7 @@ class AutoGradeGui(tk.Frame):
 
         self.student_summary_ids[studentID] = self.summary_treeview.insert(
                 '', 'end',
-                studentID=studentID,
+                studentID=ID_PREFIX+studentID,
                 numericalGrade=numericalGrade,
                 letterGrade=letterGrade,
                 scanOrder=scanOrder,
@@ -299,7 +311,7 @@ class AutoGradeGui(tk.Frame):
 
         """
         item = self.summary_treeview.item(self.summary_treeview.focus())
-        studentID = str(item['values'][0])
+        studentID = str(item['values'][0])[len(ID_PREFIX):]
         self.show_student_details(studentID)
 
 if __name__ == '__main__':
