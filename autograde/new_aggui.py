@@ -1,4 +1,6 @@
 import os
+import paramiko
+from paramiko import SSHClient
 import scp
 import shutil
 import tkinter as tk
@@ -8,6 +10,7 @@ from tkinter import font
 from agtextui import get_letter_grade
 from results import read_results, write_results
 from transfer_file import transfer, send
+from transfer_file import REMOTE_HOST_IP, USERNAME, PASSWORD
 
 """
 Program organization adapted from StackOverflow question:
@@ -30,6 +33,10 @@ def get_fraction_correct(results):
         raise ValueError('No scores found.')
     return sum(scores) / len(scores)
 
+
+
+
+START_COMMAND = 'cd capstone-ag/autograde; ./our_python autograde_toplevel.py'
 
 
 ID_PREFIX = '#'
@@ -318,6 +325,13 @@ if __name__ == '__main__':
     root = tk.Tk()
     root.title('AutoGrade')
 
+    ssh = SSHClient()
+    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    ssh.connect(REMOTE_HOST_IP, username=USERNAME, password=PASSWORD)
+    stdin, stdout, stderr = ssh.exec_command(START_COMMAND)
+
     gui = AutoGradeGui(root)
     gui.pack(fill='both', expand='true')
     root.mainloop()
+
+    ssh.exec_command('touch quit')
