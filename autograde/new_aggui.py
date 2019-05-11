@@ -216,12 +216,15 @@ class AutoGradeGui(tk.Frame):
 
         self.detail_treeview.tag_configure('lowConfidence', foreground='red')
 
+        self.stop_button = tk.Button(self, text='STOP', fg='red', command=self.stop)
+
         self.summary_label.grid(column=0, row=0, sticky='NSEW')
         self.summary_treeview.grid(column=0, row=1, sticky='NSEW')
         self.detail_label.grid(column=0, row=2, sticky='NSEW')
         self.detail_treeview.grid(column=0, row=3, sticky='NSEW')
         self.answer_label.grid(column=1, row=0, sticky='NSEW')
-        self.answer_key.grid(column=1, row=1, rowspan=3, sticky='NSEW')
+        self.answer_key.grid(column=1, row=1, rowspan=2, sticky='NSEW')
+        self.stop_button.grid(column=1, row=3, sticky='NSEW')
 
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=0)
@@ -230,6 +233,10 @@ class AutoGradeGui(tk.Frame):
         self.grid_rowconfigure(1, weight=1)
 
         self.update_results()
+
+    def stop(self):
+        """Stop pipeline running on processing unit."""
+        ssh.exec_command('touch quit')
 
     def update_results(self):
         """Get and add new results, and schedule to repeat periodically."""
@@ -334,4 +341,3 @@ if __name__ == '__main__':
     gui.pack(fill='both', expand='true')
     root.mainloop()
 
-    ssh.exec_command('touch quit')

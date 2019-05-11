@@ -41,5 +41,7 @@ def main():
 #            os.system("python3 agtextui.py " + graded)
 #            move_file(graded)
 
+    os.remove(QUIT_FILE)
+
 if __name__ == '__main__':
     main()
