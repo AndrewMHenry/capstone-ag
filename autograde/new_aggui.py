@@ -45,7 +45,7 @@ ID_PREFIX = '#'
 COPY_PERIOD_MS = 1000
 
 
-USE_LOCAL_SOURCE = True
+USE_LOCAL_SOURCE = False
 
 REMOTE_BASE = 'capstone-ag/autograde/'
 
