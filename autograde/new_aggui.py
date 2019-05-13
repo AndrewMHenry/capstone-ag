@@ -372,10 +372,10 @@ if __name__ == '__main__':
     root = tk.Tk()
     root.title('AutoGrade')
 
-    #ssh = SSHClient()
-    #ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    #ssh.connect(REMOTE_HOST_IP, username=USERNAME, password=PASSWORD)
-    #stdin, stdout, stderr = ssh.exec_command(GO_COMMAND)
+    ssh = SSHClient()
+    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    ssh.connect(REMOTE_HOST_IP, username=USERNAME, password=PASSWORD)
+    stdin, stdout, stderr = ssh.exec_command(GO_COMMAND)
 
     gui = AutoGradeGui(root)
     gui.pack(fill='both', expand='true')
