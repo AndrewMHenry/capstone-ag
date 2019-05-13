@@ -378,7 +378,7 @@ if __name__ == '__main__':
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     ssh.connect(REMOTE_HOST_IP, username=USERNAME, password=PASSWORD)
 
-    gui.clear_all()
+    gui.clear()
     stdin, stdout, stderr = ssh.exec_command(GO_COMMAND)
 
     gui.pack(fill='both', expand='true')
