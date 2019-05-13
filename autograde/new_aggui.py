@@ -36,7 +36,7 @@ def get_fraction_correct(results):
 
 
 
-START_COMMAND = 'cd capstone-ag/autograde; ./our_python autograde_toplevel.py'
+GO_COMMAND = 'cd capstone-ag/autograde; ./our_python autograde_toplevel.py'
 
 
 ID_PREFIX = '#'
@@ -45,13 +45,13 @@ ID_PREFIX = '#'
 COPY_PERIOD_MS = 1000
 
 
-USE_LOCAL_SOURCE = False
+USE_LOCAL_SOURCE = True
 
 REMOTE_BASE = 'capstone-ag/autograde/'
 
 NUM_QUESTIONS = 10
 
-"""on-board locations"""
+"""on-laptop locations"""
 DESTINATION_FILE = 'input/graded.json'
 ANSWER_KEY_FILE = 'output/answer_key.json'
 
@@ -60,8 +60,16 @@ LOCAL_SOURCE_FILE = 'graded.json'
 LOCAL_ANSWER_KEY_FILE = 'answer_key.json'
 
 """actual remote locations"""
-REMOTE_SOURCE_FILE = REMOTE_BASE + 'graded.json'
+REMOTE_SOURCE_FILE = REMOTE_BASE + 'graded.json' # SHOULD PHASE OUT!
 REMOTE_ANSWER_KEY_FILE = REMOTE_BASE + 'answer_key.json'
+
+
+"""TO BE REMOVED REMOTELY!"""
+REMOTE_GRADED_FILE = REMOTE_BASE + 'graded.json'
+REMOTE_AI_FILE = REMOTE_BASE + 'aiOut.json'
+REMOTE_SCANNED_FILE = REMOTE_BASE + 'scannedPFAS'
+REMOTE_FILES = ' '.join([REMOTE_GRADED_FILE, REMOTE_AI_FILE, REMOTE_SCANNED_FILE])
+REMOTE_RM_COMMAND = 'rm ' + REMOTE_FILES
 
 
 def receive_single_graded_file(destination):
@@ -139,6 +147,11 @@ class CustomTreeview(ttk.Treeview):
         else:
             return super().insert(parent, index, tags=tags, values=values)
 
+    def clear_all(self):
+        """Clear all entries!"""
+
+        # from StackOverflow!
+        self.delete(*self.get_children())
 
 class AnswerKeyWidget(tk.Frame):
 
@@ -153,7 +166,7 @@ class AnswerKeyWidget(tk.Frame):
                 tk.Entry(self)
                 for i in range(NUM_QUESTIONS)
                 ]
-        self.go_button = tk.Button(
+        self.save_button = tk.Button(
                 self,
                 text='Save and apply',
                 command=self.apply_answer_key
@@ -162,7 +175,7 @@ class AnswerKeyWidget(tk.Frame):
         for row in range(NUM_QUESTIONS):
             self.labels[row].grid(row=row, column=0, sticky='NSEW')
             self.entries[row].grid(row=row, column=1, sticky='NSEW')
-        self.go_button.grid(
+        self.save_button.grid(
                 row=NUM_QUESTIONS, column=0, columnspan=2, sticky='NSEW'
                 )
 
@@ -216,15 +229,25 @@ class AutoGradeGui(tk.Frame):
 
         self.detail_treeview.tag_configure('lowConfidence', foreground='red')
 
-        self.stop_button = tk.Button(self, text='STOP', fg='red', command=self.stop)
+        self.button_frame = tk.Frame(self)
+        self.go_button = tk.Button(self.button_frame, text='GO', fg='green', command=self.go)
+        self.stop_button = tk.Button(self.button_frame, text='STOP', fg='red', command=self.stop)
+        self.clear_button = tk.Button(self.button_frame, text='CLEAR', fg='blue', command=self.clear)
 
         self.summary_label.grid(column=0, row=0, sticky='NSEW')
         self.summary_treeview.grid(column=0, row=1, sticky='NSEW')
         self.detail_label.grid(column=0, row=2, sticky='NSEW')
         self.detail_treeview.grid(column=0, row=3, sticky='NSEW')
         self.answer_label.grid(column=1, row=0, sticky='NSEW')
-        self.answer_key.grid(column=1, row=1, rowspan=2, sticky='NSEW')
-        self.stop_button.grid(column=1, row=3, sticky='NSEW')
+        self.answer_key.grid(column=1, row=1, rowspan=1, sticky='NSEW')
+        self.button_frame.grid(column=1, row=2, rowspan=1, sticky='NSEW')
+
+        self.go_button.grid(column=0, row=0, sticky='NSEW')
+        self.stop_button.grid(column=1, row=0, sticky='NSEW')
+        self.clear_button.grid(column=2, row=0, sticky='NSEW')
+        self.button_frame.grid_columnconfigure(0, weight=1)
+        self.button_frame.grid_columnconfigure(1, weight=1)
+        self.button_frame.grid_columnconfigure(2, weight=1)
 
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=0)
@@ -234,9 +257,26 @@ class AutoGradeGui(tk.Frame):
 
         self.update_results()
 
+    def go(self):
+        """Start pipeline running on processing unit."""
+        ssh.exec_command(GO_COMMAND)
+
     def stop(self):
         """Stop pipeline running on processing unit."""
-        ssh.exec_command('touch quit')
+        ssh.exec_command('touch capstone-ag/autograde/quit')
+
+    def clear(self):
+        """Clear entries."""
+        print('CLEARING!!!')
+        for tv in [self.summary_treeview, self.detail_treeview]:
+            tv.clear_all()
+        self.detail_label.config(text='Details')
+
+        self.student_results.clear()
+        self.student_summary_ids.clear()
+
+        ssh.exec_command(REMOTE_RM_COMMAND)
+        os.remove(DESTINATION_FILE)
 
     def update_results(self):
         """Get and add new results, and schedule to repeat periodically."""
@@ -332,10 +372,10 @@ if __name__ == '__main__':
     root = tk.Tk()
     root.title('AutoGrade')
 
-    ssh = SSHClient()
-    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    ssh.connect(REMOTE_HOST_IP, username=USERNAME, password=PASSWORD)
-    stdin, stdout, stderr = ssh.exec_command(START_COMMAND)
+    #ssh = SSHClient()
+    #ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    #ssh.connect(REMOTE_HOST_IP, username=USERNAME, password=PASSWORD)
+    #stdin, stdout, stderr = ssh.exec_command(GO_COMMAND)
 
     gui = AutoGradeGui(root)
     gui.pack(fill='both', expand='true')
