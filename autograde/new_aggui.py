@@ -266,7 +266,7 @@ class AutoGradeGui(tk.Frame):
         ssh.exec_command('touch capstone-ag/autograde/quit')
 
     def clear(self):
-        """Clear entries."""
+        """Clear entries and pipeline."""
         print('CLEARING!!!')
         for tv in [self.summary_treeview, self.detail_treeview]:
             tv.clear_all()
@@ -372,12 +372,15 @@ if __name__ == '__main__':
     root = tk.Tk()
     root.title('AutoGrade')
 
+    gui = AutoGradeGui(root)
+
     ssh = SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     ssh.connect(REMOTE_HOST_IP, username=USERNAME, password=PASSWORD)
+
+    gui.clear_all()
     stdin, stdout, stderr = ssh.exec_command(GO_COMMAND)
 
-    gui = AutoGradeGui(root)
     gui.pack(fill='both', expand='true')
     root.mainloop()
 
